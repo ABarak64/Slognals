@@ -8,28 +8,24 @@ using System.Reactive.Linq;
 
 namespace Slognals
 {
-    /* --- SIGNAL<T> - One of the numerous child classes of the abstract Signal. It maintains the specialized
-     *                 functionality needed for a signal that emits only a single value.
-     */
-
+    /// <summary>
+    /// One of the numerous child classes of the abstract Signal. It maintains the specialized functionality needed for 
+    /// a signal that emits only a single value.
+    /// </summary>
+    /// <typeparam name="T">Whatever type the signal is transmitting.</typeparam>
     public class Signal<T> : Signal
     {
-
-        /* --- SIGNAL - This constructor simply calls the base class constructor and injects the particular
-         *              Subject<T> needed for this child class of Signal.
-         *      TAKES - Void.
-         */
-
+        /// <summary>
+        /// This constructor simply calls the base class constructor and injects the particular Subject<T> needed for 
+        /// this child class of Signal.
+        /// </summary>
         public Signal() : base(new Subject<Tuple<T>>()) { }
 
-        /* --- STREAM - This property does the casting necessary to access the _stream field as the 
-         *              appropriate type for this particular Signal child class. Necessary to allowing
-         *              the IDisposable of the _stream to be kept in the base class so that all of the
-         *              disposable functionality can be implemented there.
-         *      TAKES - Void.
-         *    RETURNS - Subject<Tuple<T>> as our protected _stream.
-         */
-
+        /// <summary>
+        /// This property does the casting necessary to access the _stream field as the appropriate type for 
+        /// this particular Signal child class. Necessary to allowing the IDisposable of the _stream to be kept in 
+        /// the base class so that all of the disposable functionality can be implemented there.
+        /// </summary>
         protected Subject<Tuple<T>> Stream
         {
             get
@@ -38,15 +34,13 @@ namespace Slognals
             }
         }
 
-        /* --- CONNECT - This method does the actual stream subscribing of the slot, as well as forces the
-         *               user to match only appropriate signals and slots (those with the same set of values)
-         *               at compile time.
-         *       TAKES - Signal<T> representing the particular single-value signal we want to connect.
-         *             - Action<T> representing the void-returning method we wish to subscribe to the signal.
-         *             - Expression<Func<T, bool>> that acts as a Where() filter for subscriptions.
-         *     RETURNS - Void.
-         */
-
+        /// <summary>
+        /// This method does the actual stream subscribing of the slot, as well as forces the user to match only 
+        /// appropriate signals and slots (those with the same set of values at compile time.
+        /// </summary>
+        /// <param name="signal">The particular single-value signal we want to connect.</param>
+        /// <param name="slot">The void-returning method we wish to subscribe to the signal.</param>
+        /// <param name="condition">Acts as a Where() filter for subscriptions.</param>
         public static void connect(Signal<T> signal, Action<T> slot, Expression<Func<T, bool>> condition = null)
         {
             if (condition != null)                 // if user is requesting a Where restriction on the subscription.
@@ -64,34 +58,33 @@ namespace Slognals
             }
         }
 
-        /* --- DISCONNECT - This method exists at this child class level only to enforce the matching of
-         *                  appropriate signal and slot types to each other.
-         *          TAKES - Signal<T> representing the particular single-value signal we want to disconnect.
-         *                - Action<T> representing the void-returning method we wish to unsubscribe from the signal.
-         *        RETURNS - Void.
-         */
-
+        /// <summary>
+        /// This method exists at this child class level only to enforce the matching of appropriate signal and slot 
+        /// types to each other.
+        /// </summary>
+        /// <param name="signal">The particular single-value signal we want to disconnect.</param>
+        /// <param name="slot">The void-returning method we wish to unsubscribe from the signal.</param>
         public static void disconnect(Signal<T> signal, Action<T> slot)
         {
             signal.disconnect(slot);
         }
 
-        /* --- EMIT - This method takes advantage of the Subject<T>'s methods to transmit a value for a particular
-         *            signal.
-         *    TAKES - T representing the value the user wishes to emit from their signal to all connected slots.
-         *  RETURNS - Void.
-         */
-
+        /// <summary>
+        /// This method takes advantage of the Subject<T>'s methods to transmit a value for a particular signal.
+        /// </summary>
+        /// <param name="val">The value the user wishes to emit from their signal to all connected slots.</param>
         public void emit(T val)
         {
             Stream.OnNext(new Tuple<T>(val));   // send off a new value to pass into the slots currently subscribed.
         }
     }
 
-    /* --- SIGNAL<T, U> - One of the numerous child classes of the abstract Signal. It maintains the specialized
-     *                    functionality needed for a signal that emits two values.
-     */
-
+    /// <summary>
+    /// One of the numerous child classes of the abstract Signal. It maintains the specialized functionality needed
+    /// for a signal that emits two values.
+    /// </summary>
+    /// <typeparam name="T">First type to be emitted in the signal.</typeparam>
+    /// <typeparam name="U">Second type to be emitted in the signal.</typeparam>
     public class Signal<T, U> : Signal
     {
         public Signal() : base(new Subject<Tuple<T, U>>()) { }
@@ -132,10 +125,13 @@ namespace Slognals
         }
     }
 
-    /* --- SIGNAL<T, U, V> - One of the numerous child classes of the abstract Signal. It maintains the specialized
-     *                       functionality needed for a signal that emits three values.
-     */
-
+    /// <summary>
+    /// One of the numerous child classes of the abstract Signal. It maintains the specialized functionality needed 
+    /// for a signal that emits three values.
+    /// </summary>
+    /// <typeparam name="T">First type to be emitted in the signal.</typeparam>
+    /// <typeparam name="U">Second type to be emitted in the signal.</typeparam>
+    /// <typeparam name="V">Third type to be emitted in the signal.</typeparam>
     public class Signal<T, U, V> : Signal
     {
         public Signal() : base(new Subject<Tuple<T, U, V>>()) { }
@@ -176,10 +172,13 @@ namespace Slognals
         }
     }
 
-    /* --- SIGNAL<T, U, V, W> - One of the numerous child classes of the abstract Signal. It maintains the specialized
-     *                          functionality needed for a signal that emits four values.
-     */
-
+    /// <summary>
+    /// One of the numerous child classes of the abstract Signal. It maintains the specialized functionality needed for a signal that emits four values.
+    /// </summary>
+    /// <typeparam name="T">First type to be emitted in the signal.</typeparam>
+    /// <typeparam name="U">Second type to be emitted in the signal.</typeparam>
+    /// <typeparam name="V">Third type to be emitted in the signal.</typeparam>
+    /// <typeparam name="W">Fourth type to be emitted in the signal.</typeparam>
     public class Signal<T, U, V, W> : Signal
     {
         public Signal() : base(new Subject<Tuple<T, U, V, W>>()) { }
